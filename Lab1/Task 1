@@ -1,0 +1,41 @@
+#include <iostream>
+using namespace std;
+
+class BankAccount 
+{
+private:
+    float balance;
+
+public:
+    BankAccount() : balance(0) {}
+    BankAccount(float bal) : balance(bal) {}
+    BankAccount(const BankAccount& acc) 
+    {
+        balance = acc.balance;  
+    }
+
+    void deduct(float d) 
+    {
+        balance = balance - d;
+    }
+
+    float getBalance() const 
+    {
+        return balance;
+    }
+};
+
+int main() {
+    BankAccount acc1;  
+    cout << "balance of acc1 : " << acc1.getBalance() << endl;
+
+    BankAccount acc2(1000);
+    cout << "balance of acc2 : " << acc2.getBalance() << endl;
+
+    BankAccount acc3(acc2);
+    acc3.deduct(200);
+    cout << "balance of acc3 : " << acc3.getBalance() << endl;
+    cout << "balance of acc2 : " << acc2.getBalance() << endl;
+
+    return 0;
+}
