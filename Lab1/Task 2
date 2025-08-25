@@ -1,0 +1,54 @@
+#include<iostream>
+using namespace std;
+class Exam
+{
+    string *studentname;
+    string *examdate;
+    int *score;
+    public:
+        void setDate(string d)
+        {
+            examdate = new string(d);
+        }
+        void setName(string n)
+        {
+            studentname = new string(n);
+        }
+        void setScore(int s)
+        {
+            score = new int(s);
+        }
+        void printDetails()
+        {
+            cout << "Printing Students exam detials" << endl;
+
+            cout<<"Student Name: "<<*studentname << endl;
+            cout<<"Exam Date: "<<*examdate << endl;
+            cout<<"Score: "<<*score << endl << endl;
+        }
+};
+int main()
+{
+    Exam s1;
+    s1.setDate("5 January 2022");
+    s1.setName("Hassaan"); 
+    s1.setScore(77);
+    
+    Exam s2 = s1;
+    cout<<"Student 1:"<<endl;
+    s1.printDetails();
+    
+    cout<<"Student 2"<<endl;
+    s2.printDetails();
+    
+    s2.setName("Muaaz");
+    s2.setDate("17 September 2022");
+    s2.setScore(58);
+    cout<<"Changing Data of student 2"<<endl;
+    
+    cout<<"Student 1"<<endl;
+    s1.printDetails();
+    cout<<"Student 2"<<endl;
+    s2.printDetails();   
+    return 0;
+}
