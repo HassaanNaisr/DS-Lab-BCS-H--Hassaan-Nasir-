@@ -1,0 +1,31 @@
+#include <iostream>
+using namespace std;
+
+class box
+{
+    int *num;
+    public:
+    box(int n)
+    {
+        num = new int(n);
+        cout << "Constructor called, Value of number = " << *num << endl;
+    }
+    
+    ~box()
+    {
+        cout << "Destructor called, Value of number = " << *num << endl;
+        delete num;
+    }
+    
+    box(const box& n) 
+    {
+        num = new int(*n.num);  
+        cout << "Deep Copy Constructor called, Value of number = " << *num << endl;
+    }
+};
+
+int main()
+{
+    box b1(32);
+    box b2 = b1;
+}
