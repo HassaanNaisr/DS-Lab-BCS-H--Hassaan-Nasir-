@@ -1,0 +1,56 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int n, m;
+    cin >> n >> m;
+
+    double** temp = new double*[n];
+    for(int i = 0; i < n; i++)
+    {
+        temp[i] = new double[m];
+        for(int j = 0; j < m; j++)
+        {
+            cin >> temp[i][j];
+        }
+    }
+
+    double* dailyAvg = new double[n];
+    for(int i = 0; i < n; i++)
+    {
+        double sum = 0;
+        for(int j = 0; j < m; j++)
+        {
+            sum += temp[i][j];
+        }
+        dailyAvg[i] = sum / m;
+        cout << "Average temperature of day " << i + 1 << ": " << dailyAvg[i] << endl;
+    }
+
+    int hottestDay = 0;
+    int coldestDay = 0;
+    for(int i = 1; i < n; i++)
+    {
+        if(dailyAvg[i] > dailyAvg[hottestDay])
+        {
+            hottestDay = i;
+        }
+        if(dailyAvg[i] < dailyAvg[coldestDay])
+        {
+            coldestDay = i;
+        }
+    }
+
+    cout << "Hottest day: " << hottestDay + 1 << endl;
+    cout << "Coldest day: " << coldestDay + 1 << endl;
+
+    for(int i = 0; i < n; i++)
+    {
+        delete[] temp[i];
+    }
+    delete[] temp;
+    delete[] dailyAvg;
+
+    return 0;
+}
