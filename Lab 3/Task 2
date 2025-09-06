@@ -1,0 +1,108 @@
+#include <iostream>
+using namespace std;
+
+class Node
+{
+  public:
+    int data;
+    Node* next;
+
+    Node(int val) 
+    {
+      data = val;
+      next = NULL;
+    }
+};
+
+class singly
+{
+  public:
+    Node* head;
+
+    singly() 
+    {
+      head = NULL;
+    }
+
+    void insertAtEnd(int val) 
+    {
+      Node* n = new Node(val);
+      if (head == NULL) 
+      {
+        head = n;
+        return;
+      }
+      Node* t = head;
+      while (t->next != NULL) 
+      {
+        t = t->next;
+      }
+      t->next = n;
+    }
+
+    void printList() 
+    {
+      Node* t = head;
+      while (t != NULL) 
+      {
+        cout << t->data << " ";
+        t = t->next;
+      }
+      cout << endl;
+    }
+
+    static Node* alternativeMerge(Node* a, Node* b) 
+    {
+      if (a == NULL) return b;
+      if (b == NULL) return a;
+
+      Node* head = a;
+      Node* nextA, *nextB;
+
+      while (a != NULL && b != NULL) 
+      {
+        nextA = a->next;
+        nextB = b->next;
+
+        a->next = b;
+        if (nextA == NULL) break; 
+
+        b->next = nextA;
+
+        a = nextA;
+        b = nextB;
+      }
+
+      return head;
+    }
+};
+
+int main() 
+{
+  singly listA, listB;
+
+  listA.insertAtEnd(1);
+  listA.insertAtEnd(3);
+  listA.insertAtEnd(5);
+
+  listB.insertAtEnd(2);
+  listB.insertAtEnd(4);
+  listB.insertAtEnd(6);
+
+  cout << "List A: ";
+  listA.printList();
+  cout << "List B: ";
+  listB.printList();
+
+  Node* t = singly::alternativeMerge(listA.head, listB.head);
+
+  cout << "Merged list : ";
+  while (t != NULL) 
+  {
+    cout << t->data << " ";
+    t = t->next;
+  }
+  cout << endl;
+
+  return 0;
+}
