@@ -1,0 +1,113 @@
+#include <iostream>
+using namespace std;
+
+class Node
+{
+  public:
+    int data;
+    Node * next;
+  
+    Node(int val) 
+    {
+      data = val;
+      next = nullptr;
+    }
+};
+
+class singly
+{
+  private:
+    Node* head;
+
+  public:
+    singly() 
+    {
+      head = nullptr;
+    }
+
+    void insertAtEnd(int val) 
+    {
+      Node* newNode = new Node(val);
+      if (head == nullptr) 
+      {
+        head = newNode;
+        return;
+      }
+      Node* t = head;
+      while (t->next != nullptr) 
+      {
+        t = t->next;
+      }
+      t->next = newNode;
+    }
+
+    void printList() 
+    {
+      Node* t = head;
+      while (t != nullptr) 
+      {
+        cout << t->data << " ";
+        t = t->next;
+      }
+      cout << endl;
+    }
+
+    Node* getHead() 
+    {
+      return head;
+    }
+
+    bool isPalindrome() 
+    {
+      int count = 0;
+      Node* t = head;
+      while (t != nullptr) 
+      {
+        count++;
+        t = t->next;
+      }
+
+      int* arr = new int[count];
+      t = head;
+      for (int i = 0; i < count; i++) 
+      {
+        arr[i] = t->data;
+        t = t->next;
+      }
+
+      int i = 0, j = count - 1;
+      while (i < j) 
+      {
+        if (arr[i] != arr[j]) 
+        {
+          delete[] arr;
+          return false;
+        }
+        i++;
+        j--;
+      }
+
+      delete[] arr;
+      return true;
+    }
+};
+
+int main() 
+{
+  singly list;
+
+  list.insertAtEnd(1);
+  list.insertAtEnd(2);
+  list.insertAtEnd(3);
+  list.insertAtEnd(2);
+  list.insertAtEnd(1);
+
+  list.printList();  
+
+  if (list.isPalindrome())
+    cout << "Palindrome" << endl;
+  else
+    cout << "Not Palindrome" << endl;
+
+  return 0;
+}
