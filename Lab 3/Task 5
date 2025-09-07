@@ -1,0 +1,146 @@
+#include <iostream>
+using namespace std;
+
+class SNode
+{
+  public:
+    int data;
+    SNode* next;
+
+    SNode(int val) 
+    {
+      data = val;
+      next = NULL;
+    }
+};
+
+class DNode
+{
+  public:
+    int data;
+    DNode* next;
+    DNode* prev;
+
+    DNode(int val) 
+    {
+      data = val;
+      next = NULL;
+      prev = NULL;
+    }
+};
+
+class SinglyList
+{
+  public:
+    SNode* head;
+
+    SinglyList() 
+    {
+      head = NULL;
+    }
+
+    void insertAtEnd(int val) 
+    {
+      SNode* n = new SNode(val);
+      if (head == NULL) 
+      {
+        head = n;
+        return;
+      }
+      SNode* t = head;
+      while (t->next != NULL) 
+      {
+        t = t->next;
+      }
+      t->next = n;
+    }
+
+    void printList() 
+    {
+      SNode* t = head;
+      while (t != NULL) 
+      {
+        cout << t->data << " ";
+        t = t->next;
+      }
+      cout << endl;
+    }
+
+    DNode* toDoubly() 
+    {
+      if (head == NULL) return NULL;
+
+      DNode* dHead = new DNode(head->data);
+      DNode* dCurr = dHead;
+      SNode* sCurr = head->next;
+
+      while (sCurr != NULL) 
+      {
+        DNode* newNode = new DNode(sCurr->data);
+        dCurr->next = newNode;
+        newNode->prev = dCurr;
+
+        dCurr = newNode;
+        sCurr = sCurr->next;
+      }
+
+      return dHead;
+    }
+
+    void toCircular() 
+    {
+      if (head == NULL) return;
+
+      SNode* t = head;
+      while (t->next != NULL) 
+      {
+        t = t->next;
+      }
+      t->next = head;
+    }
+};
+
+void printDoubly(DNode* head) 
+{
+  DNode* t = head;
+  while (t != NULL) 
+  {
+    cout << t->data << " ";
+    t = t->next;
+  }
+  cout << endl;
+}
+
+void printCircular(SNode* head, int count) 
+{
+  if (head == NULL) return;
+  SNode* t = head;
+  for (int i = 0; i < count; i++) 
+  {
+    cout << t->data << " ";
+    t = t->next;
+  }
+  cout << endl;
+}
+
+int main() 
+{
+  SinglyList s;
+  s.insertAtEnd(1);
+  s.insertAtEnd(2);
+  s.insertAtEnd(3);
+  s.insertAtEnd(4);
+
+  cout << "Singly Linked List: ";
+  s.printList();
+
+  DNode* dHead = s.toDoubly();
+  cout << "Converted to Doubly Linked List: ";
+  printDoubly(dHead);
+
+  s.toCircular();
+  cout << "Converted to Circular Linked List: ";
+  printCircular(s.head, 8);
+
+  return 0;
+}
