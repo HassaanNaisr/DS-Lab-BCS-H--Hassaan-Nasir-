@@ -1,0 +1,24 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int array[10];
+    for (int i = 0;i < 10;i++)
+    {
+        cout << "Enter a number to input in the array : " << endl;
+        cin >> array[i];
+    }
+    int num;
+    cout << "Enter a number to search for in the array using linear search : " << endl;
+    cin >> num;
+    for (int i = 0;i < 10;i++)
+    {
+        if (array[i] == num)
+        {
+            cout << "The number " << num << " was found in the array" << endl;
+            return 1;
+        }
+    }
+      cout << "The number " << num << " does not exist in the array";
+}
