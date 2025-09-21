@@ -1,0 +1,28 @@
+#include <iostream>
+using namespace std;
+
+int sumTail(int n, int total)
+{
+    if (n == 0)
+    {
+        return total;
+    }
+    total = total + n;
+    return sumTail(n-1,total);
+}
+
+int sumNonTail(int n)
+{
+    if (n == 0)
+    {
+        return 0;
+    }
+    return n + sumNonTail(n - 1);
+}
+int main()
+{
+    int x = sumTail(3,0);
+    cout << x << endl;;
+    int y = sumNonTail(5);
+    cout << y;
+}
