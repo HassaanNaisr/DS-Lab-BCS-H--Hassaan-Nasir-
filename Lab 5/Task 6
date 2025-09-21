@@ -5,16 +5,12 @@ const int N = 5;
 
 bool isSafe(int maze[N][N], int x, int y, int sol[N][N])
 {
-    if(x>=0 && x<N && y>=0 && y<N && maze[x][y]==1 && sol[x][y]==0)
-    {
-        return true;
-    }
-    return false;
+    return (x>=0 && x<N && y>=0 && y<N && maze[x][y]==1 && sol[x][y]==0);
 }
 
 bool solveMazeUtil(int maze[N][N], int x, int y, int sol[N][N])
 {
-    if(x==N-1 && y==N-1)
+    if(x==N-1 && y==N-1 && maze[x][y]==1)
     {
         sol[x][y]=1;
         return true;
@@ -24,10 +20,10 @@ bool solveMazeUtil(int maze[N][N], int x, int y, int sol[N][N])
     {
         sol[x][y]=1;
 
-        if(solveMazeUtil(maze,x+1,y,sol)) return true; 
-        if(solveMazeUtil(maze,x,y+1,sol)) return true; 
-        if(solveMazeUtil(maze,x-1,y,sol)) return true; 
-        if(solveMazeUtil(maze,x,y-1,sol)) return true; 
+        if(solveMazeUtil(maze,x+1,y,sol)) return true;
+        if(solveMazeUtil(maze,x,y+1,sol)) return true;
+        if(solveMazeUtil(maze,x-1,y,sol)) return true;
+        if(solveMazeUtil(maze,x,y-1,sol)) return true;
 
         sol[x][y]=0;
         return false;
@@ -39,7 +35,7 @@ bool solveMaze(int maze[N][N])
 {
     int sol[N][N] = {0};
 
-    if(solveMazeUtil(maze,0,0,sol)==false)
+    if(!solveMazeUtil(maze,0,0,sol))
     {
         cout<<"No path exists"<<endl;
         return false;
