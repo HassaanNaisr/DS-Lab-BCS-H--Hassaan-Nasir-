@@ -1,0 +1,43 @@
+#include <iostream>
+using namespace std;
+
+void functionA(int n);
+void functionB(int n);
+
+void printNumbers(int n)
+{
+    if (n == 0)
+    {
+        return;
+    }
+    cout << n << " ";
+    printNumbers(n-1);
+}
+
+void functionA(int n)
+{
+    if (n == 0)
+    {
+        return;
+    }
+    cout << "A" << n << " ";
+    functionB(n-1);
+}
+
+void functionB(int n)
+{
+    if (n == 0)
+    {
+        return;
+    }
+    cout << "B" << n << " ";
+    functionA(n-1);
+}
+
+int main()
+{
+    printNumbers(10);
+    cout << endl;
+    functionA(10);
+    cout << endl;
+}
