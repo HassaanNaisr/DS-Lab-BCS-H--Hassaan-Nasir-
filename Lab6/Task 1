@@ -1,0 +1,96 @@
+#include <iostream>
+using namespace std;
+
+#define MAX 10   
+
+class Stack
+{
+private:
+    int top;
+
+public:
+    int array[MAX];
+
+    Stack()
+    {
+        top = -1;
+    }
+
+    bool push(int x)
+    {
+        if (top >= (MAX - 1))
+        {
+            cout << "Stack overflow" << endl;
+            return false;
+        }
+        else
+        {
+            top++;  
+            array[top] = x;
+            cout << x << " added at top of the stack" << endl;
+            return true;
+        }
+    }
+
+    int pop()
+    {
+        if (top < 0)
+        {
+            cout << "Stack underflow" << endl;
+            return 0;
+        }
+        else
+        {
+            int x = array[top];
+            top--;
+            return x;
+        }
+    }
+
+    int peek()
+    {
+        if (top < 0)
+        {
+            cout << "Stack underflow" << endl;
+            return 0;
+        }
+        else
+        {
+            return array[top];
+        }
+    }
+
+    void display()
+    {
+        if (top < 0)
+        {
+            cout << "Stack underflow" << endl;
+            return;
+        }
+
+        cout << "Displaying stack content:" << endl;
+        for (int i = top; i >= 0; i--)
+        {
+            cout << array[i] << endl;
+        }
+    }
+};
+
+int main()
+{
+    Stack s;
+
+    s.push(10);
+    s.push(20);
+    s.push(30);
+
+    s.display();
+
+    cout << "Top element is " << s.peek() << endl;
+
+    cout << "Popped element: " << s.pop() << endl;
+
+    s.display();
+
+    return 0;
+}
