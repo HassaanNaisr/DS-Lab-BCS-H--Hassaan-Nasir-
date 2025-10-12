@@ -1,0 +1,76 @@
+#include <iostream>
+using namespace std;
+
+#define MAX 10
+
+int front = -1;
+int rear = -1;
+int array[MAX];
+
+bool isFull() {
+    return rear == MAX - 1;
+}
+
+bool isEmpty() 
+{
+    return front == -1 || front > rear;
+}
+
+void enQueue(int value) 
+{
+    if (isFull()) {
+        cout << "Queue is full" << endl;
+        return;
+    }
+    if (front == -1) 
+    {
+        front = 0;
+    }
+    array[++rear] = value;
+    cout << value << " enqueued" << endl;
+}
+
+int deQueue() {
+    if (isEmpty()) 
+    {
+        cout << "Queue is empty" << endl;
+        return -1;
+    }
+    cout << array[front] << " dequeued" << endl;
+    return array[front++];
+}
+
+void Display() {
+    if (isEmpty()) 
+    {
+        cout << "Queue is empty" << endl;
+        return;
+    }
+    cout << "Queue contents: ";
+    for (int i = front; i <= rear; i++) 
+    {
+        cout << array[i] << " ";
+    }
+    cout << endl;
+}
+
+int main() 
+{
+    enQueue(1);
+    enQueue(2);
+    enQueue(3);
+    enQueue(4);
+    enQueue(5);
+    enQueue(6);
+    enQueue(7);
+    enQueue(8);
+    enQueue(9);
+    enQueue(10);
+
+    Display();
+
+    deQueue();
+    deQueue();
+
+    Display();
+}
