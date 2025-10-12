@@ -1,0 +1,168 @@
+#include <iostream>
+using namespace std;
+
+#define MAX 100
+
+struct Process
+{
+    int id;
+    int priority;
+};
+
+class Queue
+{
+private:
+    Process arr[MAX];
+    int front;
+    int rear;
+    int count;
+public:
+    Queue()
+    {
+        front = 0;
+        rear = -1;
+        count = 0;
+    }
+    bool isEmpty()
+    {
+        return count == 0;
+    }
+    bool isFull()
+    {
+        return count == MAX;
+    }
+    void enqueue(Process p)
+    {
+        if (!isFull())
+        {
+            rear = (rear + 1) % MAX;
+            arr[rear] = p;
+            count++;
+        }
+    }
+    Process dequeue()
+    {
+        Process temp = { -1, -1 };
+        if (!isEmpty())
+        {
+            temp = arr[front];
+            front = (front + 1) % MAX;
+            count--;
+        }
+        return temp;
+    }
+};
+
+class Stack
+{
+private:
+    Process arr[MAX];
+    int top;
+public:
+    Stack()
+    {
+        top = -1;
+    }
+    bool isEmpty()
+    {
+        return top == -1;
+    }
+    bool isFull()
+    {
+        return top == MAX - 1;
+    }
+    void push(Process p)
+    {
+        if (!isFull()) arr[++top] = p;
+    }
+    Process pop()
+    {
+        Process temp = { -1, -1 };
+        if (!isEmpty()) temp = arr[top--];
+        return temp;
+    }
+};
+
+void displayProcess(Process p)
+{
+    cout << "Process ID: " << p.id << ", Priority: " << p.priority << endl;
+}
+
+int main()
+{
+    Queue arrivalQueue;
+    Stack execStack;
+    int n;
+
+    cout << "Enter number of processes: ";
+    cin >> n;
+
+    for (int i = 0; i < n; i++)
+    {
+        Process p;
+        bool valid = false;
+
+        while (!valid)
+        {
+            cout << "\nEnter Process ID (positive integer): ";
+            cin >> p.id;
+
+            if (cin.fail() || p.id <= 0)
+            {
+                cout << "Invalid Process ID. Try again.\n";
+                cin.clear();
+                cin.ignore(1000, '\n');
+                continue;
+            }
+
+            cout << "Enter Priority (1-10): ";
+            cin >> p.priority;
+
+            if (cin.fail() || p.priority < 1 || p.priority > 10)
+            {
+                cout << "Invalid Priority. Must be between 1 and 10.\n";
+                cin.clear();
+                cin.ignore(1000, '\n');
+                continue;
+            }
+
+            valid = true;
+        }
+
+        arrivalQueue.enqueue(p);
+    }
+
+    cout << "\nProcesses arrived in Queue (FIFO):\n";
+    Queue tempQueue = arrivalQueue;
+    while (!tempQueue.isEmpty())
+    {
+        displayProcess(tempQueue.dequeue());
+    }
+
+    cout << "\nMoving high-priority tasks to Stack (LIFO execution order)...\n";
+
+    while (!arrivalQueue.isEmpty())
+    {
+        Process p = arrivalQueue.dequeue();
+        if (p.priority >= 5)
+        {
+            execStack.push(p);
+        }
+        else
+        {
+            cout << "Low priority process " << p.id << " deferred (priority " << p.priority << ")\n";
+        }
+    }
+
+    cout << "\nExecuting high-priority tasks (Stack - LIFO):\n";
+    while (!execStack.isEmpty())
+    {
+        Process p = execStack.pop();
+        cout << "Executing ";
+        displayProcess(p);
+    }
+
+    cout << "\nAll high-priority processes executed.\n";
+
+    return 0;
+}
