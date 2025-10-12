@@ -1,0 +1,116 @@
+#include <iostream>
+using namespace std;
+
+#define SIZE 5
+
+class CircularQueue
+{
+private:
+    int arr[SIZE];
+    int front;
+    int rear;
+
+public:
+    CircularQueue()
+    {
+        front = -1;
+        rear = -1;
+    }
+
+    bool isFull()
+    {
+        return ((rear + 1) % SIZE == front);
+    }
+
+    bool isEmpty()
+    {
+        return (front == -1);
+    }
+
+    void enqueue(int value)
+    {
+        if (isFull())
+        {
+            cout << "Queue Overflow" << endl;
+            return;
+        }
+
+        if (isEmpty())
+        {
+            front = 0;
+            rear = 0;
+        }
+        else
+        {
+            rear = (rear + 1) % SIZE;
+        }
+
+        arr[rear] = value;
+    }
+
+    int dequeue()
+    {
+        if (isEmpty())
+        {
+            cout << "Queue Underflow" << endl;
+            return -1;
+        }
+
+        int result = arr[front];
+
+        if (front == rear)
+        {
+            front = -1;
+            rear = -1;
+        }
+        else
+        {
+            front = (front + 1) % SIZE;
+        }
+
+        return result;
+    }
+
+    void display()
+    {
+        if (isEmpty())
+        {
+            cout << "Queue is empty" << endl;
+            return;
+        }
+
+        int i = front;
+        while (true)
+        {
+            cout << arr[i] << " ";
+            if (i == rear)
+                break;
+            i = (i + 1) % SIZE;
+        }
+        cout << endl;
+    }
+};
+
+int main()
+{
+    CircularQueue q;
+
+    q.enqueue(1);
+    q.enqueue(2);
+    q.enqueue(3);
+    q.enqueue(4);
+    q.enqueue(5);
+    q.display();
+
+    q.dequeue();
+    q.dequeue();
+    q.display();
+
+    q.enqueue(6);
+    q.enqueue(7);
+    q.display();
+
+    q.enqueue(80);
+
+    return 0;
+}
