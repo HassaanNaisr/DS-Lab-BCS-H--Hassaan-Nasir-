@@ -1,0 +1,90 @@
+#include "iostream"
+using namespace std;
+
+class node
+{
+public:
+    int data;
+    node* next;
+    node(int value = 0)
+    {
+        data = value;
+        next = nullptr;
+    }
+};
+
+class stack
+{
+private:
+    node* top;
+
+public:
+    stack()
+    {
+        top = nullptr;
+    }
+
+    void push(int value)
+    {
+        node* temp = new node(value);
+        temp->next = top;
+        top = temp;
+        cout << "Pushed: " << temp->data << endl;
+    }
+
+    void pop()
+    {
+        if (top == NULL)
+        {
+            cout << "Stack is empty" << endl;
+            return;
+        }
+        node* temp = top;
+        top = top->next;
+        cout << "Popped: " << temp->data << endl;
+        delete temp;
+    }
+
+    void peek()
+    {
+        if (top == NULL)
+        {
+            cout << "Stack is empty" << endl;
+            return;
+        }
+        cout << "Top element: " << top->data << endl;
+    }
+
+    void Display()
+    {
+        if (top == NULL)
+        {
+            cout << "Stack is empty" << endl;
+            return;
+        }
+        cout << "Displaying stack contents:" << endl;
+        node* temp = top;
+        while (temp != NULL)
+        {
+            cout << temp->data << endl;
+            temp = temp->next;
+        }
+    }
+};
+
+int main()
+{
+    stack s1;
+    s1.push(5);
+    s1.push(22);
+    s1.push(3);
+
+    s1.Display();
+
+    s1.pop();
+    s1.Display();
+
+    s1.peek();
+
+    return 0;
+}
