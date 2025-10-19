@@ -1,0 +1,191 @@
+#include <iostream>
+#include <stack>
+#include <string>
+#include <cctype>
+using namespace std;
+
+int precLevel(char op)
+{
+    if (op == '+' || op == '-') return 1;
+    if (op == '*' || op == '/') return 2;
+    return 0;
+}
+
+bool checkOp(char ch)
+{
+    return (ch == '+' || ch == '-' || ch == '*' || ch == '/');
+}
+
+bool isNum(char ch)
+{
+    return isdigit(ch);
+}
+
+string reverseExp(string s)
+{
+    int n = s.size();
+    for (int i = 0; i < n / 2; i++)
+    {
+        swap(s[i], s[n - i - 1]);
+    }
+    return s;
+}
+
+string toPrefix(const string& infix)
+{
+    string rev = "";
+    for (int i = infix.size() - 1; i >= 0; i--)
+    {
+        if (infix[i] == '(')
+        {
+            rev += ')';
+        }
+        else if (infix[i] == ')')
+        {
+            rev += '(';
+        }
+        else
+        {
+            rev += infix[i];
+        }
+    }
+
+    stack<char> st;
+    string prefix = "";
+
+    for (size_t i = 0; i < rev.size(); i++)
+    {
+        char ch = rev[i];
+
+        if (ch == ' ') continue;
+
+        if (isdigit(ch))
+        {
+            string num = "";
+            while (i < rev.size() && isdigit(rev[i]))
+            {
+                num += rev[i];
+                i++;
+            }
+            prefix += num + " ";
+            i--;
+        }
+        else if (ch == '(')
+        {
+            st.push(ch);
+        }
+        else if (ch == ')')
+        {
+            while (!st.empty() && st.top() != '(')
+            {
+                prefix += st.top();
+                prefix += ' ';
+                st.pop();
+            }
+            if (!st.empty()) st.pop();
+        }
+        else if (checkOp(ch))
+        {
+            while (!st.empty() && checkOp(st.top()) && precLevel(st.top()) >= precLevel(ch))
+            {
+                prefix += st.top();
+                prefix += ' ';
+                st.pop();
+            }
+            st.push(ch);
+        }
+    }
+
+    while (!st.empty())
+    {
+        prefix += st.top();
+        prefix += ' ';
+        st.pop();
+    }
+
+    string res = reverseExp(prefix);
+    return res;
+}
+
+int evalPrefix(const string& prefix)
+{
+    stack<int> st;
+
+    for (int i = prefix.size() - 1; i >= 0; i--)
+    {
+        char ch = prefix[i];
+
+        if (ch == ' ') continue;
+
+        if (isdigit(ch))
+        {
+            int num = 0, place = 1;
+            while (i >= 0 && isdigit(prefix[i]))
+            {
+                num += (prefix[i] - '0') * place;
+                place *= 10;
+                i--;
+            }
+            st.push(num);
+            i++;
+        }
+        else if (checkOp(ch))
+        {
+            if (st.size() < 2)
+            {
+                cerr << "Error: Invalid expression\n";
+                exit(1);
+            }
+
+            int val1 = st.top(); st.pop();
+            int val2 = st.top(); st.pop();
+            int res = 0;
+
+            switch (ch)
+            {
+                case '+': res = val1 + val2; break;
+                case '-': res = val1 - val2; break;
+                case '*': res = val1 * val2; break;
+                case '/':
+                    if (val2 == 0)
+                    {
+                        cerr << "Error: Division by zero\n";
+                        exit(1);
+                    }
+                    res = val1 / val2;
+                    break;
+            }
+
+            st.push(res);
+        }
+    }
+
+    if (st.size() != 1)
+    {
+        cerr << "Error: Invalid prefix expression\n";
+        exit(1);
+    }
+
+    return st.top();
+}
+
+int main()
+{
+    string input;
+    cout << "Enter infix expression: ";
+    getline(cin, input);
+
+    if (input.empty())
+    {
+        cerr << "Error: Empty expression\n";
+        return 1;
+    }
+
+    string prefix = toPrefix(input);
+    cout << "Prefix expression: " << prefix << endl;
+
+    int result = evalPrefix(prefix);
+    cout << "Evaluated result: " << result << endl;
+
+    return 0;
+}
