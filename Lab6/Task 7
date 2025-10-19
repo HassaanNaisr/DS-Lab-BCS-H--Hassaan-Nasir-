@@ -3,166 +3,166 @@ using namespace std;
 
 #define MAX 100
 
-struct Process
-{
+class Process {
     int id;
     int priority;
+
+public:
+    Process(int pid = -1, int prio = -1) {
+        id = pid;
+        priority = prio;
+    }
+
+    int getId() const { return id; }
+    int getPriority() const { return priority; }
+
+    void display() const {
+        cout << "Process ID: " << id << ", Priority: " << priority << endl;
+    }
 };
 
-class Queue
-{
-private:
+class Queue {
     Process arr[MAX];
-    int front;
-    int rear;
-    int count;
+    int front, rear, count;
+
 public:
-    Queue()
-    {
+    Queue() {
         front = 0;
         rear = -1;
         count = 0;
     }
-    bool isEmpty()
-    {
-        return count == 0;
-    }
-    bool isFull()
-    {
-        return count == MAX;
-    }
-    void enqueue(Process p)
-    {
-        if (!isFull())
-        {
+
+    bool isEmpty() const { return count == 0; }
+    bool isFull() const { return count == MAX; }
+
+    void enqueue(const Process &p) {
+        if (!isFull()) {
             rear = (rear + 1) % MAX;
             arr[rear] = p;
             count++;
         }
     }
-    Process dequeue()
-    {
-        Process temp = { -1, -1 };
-        if (!isEmpty())
-        {
-            temp = arr[front];
-            front = (front + 1) % MAX;
-            count--;
-        }
+
+    Process dequeue() {
+        if (isEmpty()) return Process();
+        Process temp = arr[front];
+        front = (front + 1) % MAX;
+        count--;
         return temp;
+    }
+
+    bool hasPriority(int prio) const {
+        int idx = front;
+        for (int i = 0; i < count; i++) {
+            if (arr[idx].getPriority() == prio) return true;
+            idx = (idx + 1) % MAX;
+        }
+        return false;
+    }
+
+    void show() const {
+        int idx = front;
+        for (int i = 0; i < count; i++) {
+            arr[idx].display();
+            idx = (idx + 1) % MAX;
+        }
     }
 };
 
-class Stack
-{
-private:
+class Stack {
     Process arr[MAX];
     int top;
+
 public:
-    Stack()
-    {
-        top = -1;
+    Stack() { top = -1; }
+
+    bool isEmpty() const { return top == -1; }
+
+    void push(const Process &p) {
+        if (top < MAX - 1) arr[++top] = p;
     }
-    bool isEmpty()
-    {
-        return top == -1;
-    }
-    bool isFull()
-    {
-        return top == MAX - 1;
-    }
-    void push(Process p)
-    {
-        if (!isFull()) arr[++top] = p;
-    }
-    Process pop()
-    {
-        Process temp = { -1, -1 };
-        if (!isEmpty()) temp = arr[top--];
-        return temp;
+
+    Process pop() {
+        if (isEmpty()) return Process();
+        return arr[top--];
     }
 };
 
-void displayProcess(Process p)
-{
-    cout << "Process ID: " << p.id << ", Priority: " << p.priority << endl;
-}
-
-int main()
-{
+class Scheduler {
     Queue arrivalQueue;
     Stack execStack;
-    int n;
 
-    cout << "Enter number of processes: ";
-    cin >> n;
+public:
+    void inputProcesses() {
+        int n;
+        cout << "Enter number of processes: ";
+        cin >> n;
 
-    for (int i = 0; i < n; i++)
-    {
-        Process p;
-        bool valid = false;
+        for (int i = 0; i < n; i++) {
+            int id, priority;
+            bool valid = false;
 
-        while (!valid)
-        {
-            cout << "\nEnter Process ID (positive integer): ";
-            cin >> p.id;
+            while (!valid) {
+                cout << "\nEnter Process ID (positive integer): ";
+                cin >> id;
 
-            if (cin.fail() || p.id <= 0)
-            {
-                cout << "Invalid Process ID. Try again.\n";
-                cin.clear();
-                cin.ignore(1000, '\n');
-                continue;
+                cout << "Enter Priority (1–10): ";
+                cin >> priority;
+
+                if (cin.fail() || id <= 0 || priority < 1 || priority > 10) {
+                    cout << "❌ Invalid input. Try again.\n";
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    continue;
+                }
+
+                if (arrivalQueue.hasPriority(priority)) {
+                    cout << "❌ Duplicate priority detected! Each process must have a unique priority.\n";
+                    continue;
+                }
+
+                valid = true;
             }
 
-            cout << "Enter Priority (1-10): ";
-            cin >> p.priority;
-
-            if (cin.fail() || p.priority < 1 || p.priority > 10)
-            {
-                cout << "Invalid Priority. Must be between 1 and 10.\n";
-                cin.clear();
-                cin.ignore(1000, '\n');
-                continue;
-            }
-
-            valid = true;
-        }
-
-        arrivalQueue.enqueue(p);
-    }
-
-    cout << "\nProcesses arrived in Queue (FIFO):\n";
-    Queue tempQueue = arrivalQueue;
-    while (!tempQueue.isEmpty())
-    {
-        displayProcess(tempQueue.dequeue());
-    }
-
-    cout << "\nMoving high-priority tasks to Stack (LIFO execution order)...\n";
-
-    while (!arrivalQueue.isEmpty())
-    {
-        Process p = arrivalQueue.dequeue();
-        if (p.priority >= 5)
-        {
-            execStack.push(p);
-        }
-        else
-        {
-            cout << "Low priority process " << p.id << " deferred (priority " << p.priority << ")\n";
+            arrivalQueue.enqueue(Process(id, priority));
         }
     }
 
-    cout << "\nExecuting high-priority tasks (Stack - LIFO):\n";
-    while (!execStack.isEmpty())
-    {
-        Process p = execStack.pop();
-        cout << "Executing ";
-        displayProcess(p);
+    void showQueue() const {
+        cout << "\nProcesses in Queue (Arrival Order):\n";
+        arrivalQueue.show();
     }
 
-    cout << "\nAll high-priority processes executed.\n";
+    void moveToStack() {
+        cout << "\nMoving high-priority processes (≥5) to Stack...\n";
+        Queue temp = arrivalQueue;
 
+        while (!temp.isEmpty()) {
+            Process p = temp.dequeue();
+            if (p.getPriority() >= 5)
+                execStack.push(p);
+            else
+                cout << "Low priority process " << p.getId()
+                     << " (priority " << p.getPriority() << ") deferred.\n";
+        }
+    }
+
+    void executeStack() {
+        cout << "\nExecuting high-priority tasks (LIFO order):\n";
+        while (!execStack.isEmpty()) {
+            Process p = execStack.pop();
+            cout << "Executing ";
+            p.display();
+        }
+    }
+};
+
+int main() {
+    Scheduler s;
+    s.inputProcesses();
+    s.showQueue();
+    s.moveToStack();
+    s.executeStack();
     return 0;
 }
+
