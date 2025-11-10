@@ -1,0 +1,167 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Node
+{
+public:
+    int playCount;
+    string songName;
+    Node* left;
+    Node* right;
+
+    Node(int count, string name)
+    {
+        playCount = count;
+        songName = name;
+        left = right = nullptr;
+    }
+};
+
+class MusicBST
+{
+private:
+    Node* root;
+
+    Node* insert(Node* node, int count, string name)
+    {
+        if (node == nullptr)
+            return new Node(count, name);
+
+        if (count < node->playCount)
+            node->left = insert(node->left, count, name);
+        else if (count > node->playCount)
+            node->right = insert(node->right, count, name);
+        else
+            cout << "Song with this play count already exists\n";
+        return node;
+    }
+
+    Node* search(Node* node, int count)
+    {
+        if (node == nullptr || node->playCount == count)
+            return node;
+        if (count < node->playCount)
+            return search(node->left, count);
+        return search(node->right, count);
+    }
+
+    void inorder(Node* node)
+    {
+        if (node == nullptr)
+            return;
+        inorder(node->left);
+        cout << node->songName << " (" << node->playCount << " plays)\n";
+        inorder(node->right);
+    }
+
+    void postorder(Node* node)
+    {
+        if (node == nullptr)
+            return;
+        postorder(node->left);
+        postorder(node->right);
+        cout << node->songName << " (" << node->playCount << " plays)\n";
+    }
+
+    Node* findMin(Node* node)
+    {
+        while (node && node->left != nullptr)
+            node = node->left;
+        return node;
+    }
+
+    Node* deleteNode(Node* node, int count)
+    {
+        if (node == nullptr)
+            return node;
+
+        if (count < node->playCount)
+            node->left = deleteNode(node->left, count);
+        else if (count > node->playCount)
+            node->right = deleteNode(node->right, count);
+        else
+        {
+            if (node->left == nullptr)
+            {
+                Node* temp = node->right;
+                delete node;
+                return temp;
+            }
+            else if (node->right == nullptr)
+            {
+                Node* temp = node->left;
+                delete node;
+                return temp;
+            }
+
+            Node* temp = findMin(node->right);
+            node->playCount = temp->playCount;
+            node->songName = temp->songName;
+            node->right = deleteNode(node->right, temp->playCount);
+        }
+        return node;
+    }
+
+public:
+    MusicBST()
+    {
+        root = nullptr;
+    }
+
+    void insertSong(int count, string name)
+    {
+        root = insert(root, count, name);
+    }
+
+    void searchSong(int count)
+    {
+        Node* result = search(root, count);
+        if (result != nullptr)
+            cout << "Found: " << result->songName << " (" << result->playCount << " plays)\n";
+        else
+            cout << "Song not found\n";
+    }
+
+    void displayInorder()
+    {
+        cout << "\nSongs from least to most played:\n";
+        inorder(root);
+    }
+
+    void displayPostorder()
+    {
+        cout << "\nSongs removed from playlist in reverse popularity order:\n";
+        postorder(root);
+    }
+
+    void deleteSong(int count)
+    {
+        root = deleteNode(root, count);
+        cout << "Song with play count " << count << " deleted\n";
+    }
+};
+
+int main()
+{
+    MusicBST playlist;
+
+    playlist.insertSong(120, "Song A");
+    playlist.insertSong(300, "Song B");
+    playlist.insertSong(180, "Song C");
+    playlist.insertSong(90, "Song D");
+    playlist.insertSong(450, "Song E");
+
+    cout << "\nSearching for play count 180:\n";
+    playlist.searchSong(180);
+
+    playlist.displayInorder();
+    playlist.displayPostorder();
+
+    cout << "\nDeleting song with play count 180\n";
+    playlist.deleteSong(180);
+
+    playlist.displayInorder();
+
+    return 0;
+}
