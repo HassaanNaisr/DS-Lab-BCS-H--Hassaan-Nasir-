@@ -1,0 +1,90 @@
+#include <iostream>
+using namespace std;
+
+class node
+{
+public:
+    string name;
+    node* Mother;
+    node* Father;
+
+    node(string n) : name(n), Mother(nullptr), Father(nullptr) {}
+};
+
+class BinaryTree
+{
+public:
+    node* head;
+
+    BinaryTree() : head(nullptr) {}
+
+
+    node* Insert(node* head, string name)
+    {
+        if (!head)
+            return new node(name);
+
+        if (name < head->name)        
+            head->Mother = Insert(head->Mother, name);
+        else                  
+            head->Father = Insert(head->Father, name);
+
+        return head;
+    }
+
+    void DisplayRoot()
+    {
+        if (head) cout << "Root (Youngest Person): " << head->name << endl;
+    }
+
+    void DisplayLeafNodes(node* head)
+    {
+        if (!head) return;
+
+        if (!head->Mother && !head->Father)
+            cout << head->name << " ";
+
+        DisplayLeafNodes(head->Mother);
+        DisplayLeafNodes(head->Father);
+    }
+
+    int Height(node* head)
+    {
+        if (!head) return 0;
+        return max(Height(head->Mother), Height(head->Father)) + 1;
+    }
+
+    void DisplayLevels(node* head, int level)
+    {
+        if (!head) return;
+        cout << head->name << " is at level " << level << endl;
+        DisplayLevels(head->Mother, level + 1);
+        DisplayLevels(head->Father, level + 1);
+    }
+};
+
+int main()
+{
+    BinaryTree tree;
+
+    tree.head = tree.Insert(tree.head, "Ali");
+    tree.Insert(tree.head, "Ayesha");
+    tree.Insert(tree.head, "Amjad");
+    tree.Insert(tree.head, "Zehra");
+    tree.Insert(tree.head, "Majid");
+    tree.Insert(tree.head, "Iqra");
+    tree.Insert(tree.head, "Uzair");
+
+    tree.DisplayRoot();
+
+    cout << "Leaf Nodes (Oldest Known Ancestors): ";
+    tree.DisplayLeafNodes(tree.head);
+    cout << endl;
+
+    cout << "Height of Tree: " << tree.Height(tree.head) << endl;
+
+    cout << "Levels of Each Member:" << endl;
+    tree.DisplayLevels(tree.head, 0);
+
+    return 0;
+}
